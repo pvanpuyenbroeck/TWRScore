@@ -1,0 +1,16 @@
+{
+  "name": "twrnode",
+  "version": "1.0.0",
+  "description": "The white russians website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pieter Van Puyenbroeck",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "firebase": "^5.0.4"
+  }
+}

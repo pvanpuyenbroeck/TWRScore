@@ -3,7 +3,6 @@ var express = require("express");
 var middleware = require('../middleware/index.js');
 var bodyParser = require('body-parser');
 var router  = express.Router();
-var loggedIn;
 
   var config = {
     apiKey: "AIzaSyBozHGXL0oCEHsaK3KxN1nEHsYoydZvL8g",
@@ -15,18 +14,21 @@ var loggedIn;
   };
   firebase.initializeApp(config);
 
-router.use(function(req,res,next){
-    var user = firebase.auth().currentUser;
-    if(user){
+firebase.auth().onAuthStateChanged(function(user) {
+  router.user = user;
+  console.log(router.user);
+  if(router.user){  
+  }
+  });
+
+router.get("/",loggedIn, function(req,res){
         res.render("home");
-    }else{
-        res.redirect("login");
-    }
 })
 
-router.get("/", function(req,res){
+router.get("/home",function(req,res){
     res.render("home");
 })
+
 router.get("/login", function(req,res){
     res.render("login");
 })
@@ -50,7 +52,15 @@ router.post("/Login", function(req,res){
         var errorcode = error.code;
         var errorMessage = error.message;
     });
-    res.render('home');
+    res.render("home");
 });
+
+function loggedIn(req,res, next){
+    // var user = firebase.auth().currentUser;
+    if(router.user){
+        return next();
+    }
+    res.render("login");
+}
 
 module.exports = router;

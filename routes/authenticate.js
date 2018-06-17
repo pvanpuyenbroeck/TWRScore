@@ -2,8 +2,20 @@ var firebase = require('firebase');
 var express = require("express");
 var middleware = require('../middleware/index.js');
 var bodyParser = require('body-parser');
-var admin = require('firebase-admin');
 var router  = express.Router();
+var FirebaseStrategy = require('passport-firebase-auth').Strategy;
+
+passport.use(new FirebaseStrategy({
+    firebaseProjectId: "mvcscore",
+    authorizationURL: 'https://accounts.google.com/o/oauth2/auth',
+    callbackURL: 'https://www.example.net/auth/firebase/callback'
+  },
+  function(accessToken, refreshToken, decodedToken, cb) {
+    User.findOrCreate(..., function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
 
   var config = {
     apiKey: "AIzaSyBozHGXL0oCEHsaK3KxN1nEHsYoydZvL8g",
@@ -36,9 +48,8 @@ var GetLoginName = function(req, res,next){
     } 
     next();
 }
-router.use(GetLoginName);
 
-router.get("/", GetLoginName, function(req,res){
+router.get("/", function(req,res){
         res.render("home",{user: router.email});
         console.log(router.email);
 })
@@ -67,29 +78,5 @@ router.post("/Register", function(req,res){
 router.post("/Login", login,function(req,res){
     res.redirect("login");
 });
-
-function loggedIn(req,res, next){
-    // var user = firebase.auth().currentUser;
-    if(router.user){
-        return next();
-    }
-    res.redirect("login");
-}
-
-var notLoggedin = function(req,res){
-    res.redirect("login");
-}
-
-function login(req,res,next){
-    var email = req.body.email;
-    var pasword = req.body.pasword;
-    firebase.auth().signInWithEmailAndPassword(email,pasword).catch(function(error){
-        var errorcode = error.code;
-        var errorMessage = error.message;
-        next();
-    });
-    console.log(firebase.auth().currentUser);
-    next();
-}
 
 module.exports = router;

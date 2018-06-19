@@ -1,82 +1,69 @@
-var firebase = require('firebase');
-var express = require("express");
-var middleware = require('../middleware/index.js');
-var bodyParser = require('body-parser');
-var router  = express.Router();
-var FirebaseStrategy = require('passport-firebase-auth').Strategy;
+//app/routes.js
 
-passport.use(new FirebaseStrategy({
-    firebaseProjectId: "mvcscore",
-    authorizationURL: 'https://accounts.google.com/o/oauth2/auth',
-    callbackURL: 'https://www.example.net/auth/firebase/callback'
-  },
-  function(accessToken, refreshToken, decodedToken, cb) {
-    User.findOrCreate(..., function (err, user) {
-      return cb(err, user);
+module.exports = function(app,passport){
+
+app.get('/', function(req,res){
+        res.render("login.ejs");
+})
+
+app.get("/home",function(req,res){
+    res.render("home.ejs", {user: req.username});
+})
+
+app.get("/login", function(req,res){
+    res.render("login.ejs" ,{message: req.flash('loginMessage')});
+})
+
+
+//process the login form
+app.post("/login",passport.authenticate('local-login'),{
+    succesRedirect:'/home',
+    failureRedirect : '/login',
+    failureflash : true
+});
+
+//=========================
+//Signup==================
+//========================
+//show the signup form
+app.get("/register", function(req,res){
+    res.render('register', {message: req.flash('signupMessage')});
+})
+//process the signup form
+app.post('/register', passport.authenticate('local-signup',{
+    succesRedirect : '/home',
+    failureRedirect : '/register',
+    failureflash : true
+}), console.log("er is iets gelogd"));
+
+    // =====================================
+    // PROFILE SECTION =====================
+    // =====================================
+    // we will want this protected so you have to be logged in to visit
+    // we will use route middleware to verify this (the isLoggedIn function)
+    app.get('/home', isLoggedIn, function(req, res) {
+        res.render('home', {
+            user : req.user // get the user out of session and pass to template
+        });
     });
-  }
-));
 
-  var config = {
-    apiKey: "AIzaSyBozHGXL0oCEHsaK3KxN1nEHsYoydZvL8g",
-    authDomain: "mvcscore.firebaseapp.com",
-    databaseURL: "https://mvcscore.firebaseio.com",
-    projectId: "mvcscore",
-    storageBucket: "mvcscore.appspot.com",
-    messagingSenderId: "87462869957"
-  };
-  firebase.initializeApp(config);
+        // =====================================
+    // LOGOUT ==============================
+    // =====================================
+    app.get('/logout', function(req, res) {
+        req.logout();
+        res.redirect('/');
+    });
+};
 
-var serviceAccount = require('../public/serviceAccount.json');
-var admin = require('firebase-admin');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://mvcscore.firebaseio.com'
-});
 
-admin.auth().onAuthStateChanged(function(user) {
-  router.user = user;
-  console.log(router.user);
-  if(router.user == null){  
-      notLoggedin;
-  }
-});
-var GetLoginName = function(req, res,next){
-    if(router.user){
-        req.username = router.user.email;
-        next();
-    } 
-    next();
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/');
 }
-
-router.get("/", function(req,res){
-        res.render("home",{user: router.email});
-        console.log(router.email);
-})
-
-router.get("/home",function(req,res){
-    res.render("home", {user: req.username});
-})
-
-router.get("/login", function(req,res){
-    res.render("login" ,{user: req.username});
-})
-router.get("/register", function(req,res){
-    res.render('register', {user: req.username});
-})
-
-router.post("/Register", function(req,res){
-    var email = req.body.email;
-    var pasword = req.body.pasword;
-    firebase.auth().createUserWithEmailAndPassword(email,pasword).catch(function(error){
-        var errorcode = error.code;
-        var errorMessage = error.message;
-    });
-    console.log(firebase.auth().currentUser);
-    res.render('home', {user: router.username});
-});
-router.post("/Login", login,function(req,res){
-    res.redirect("login");
-});
-
-module.exports = router;

@@ -10,13 +10,14 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var port     = process.env.PORT || 8080;
 
 var configDB = require('./config/database.js');
 
 //configuration
 mongoose.connect(configDB.url);
-
-require('./config/passport')(passport);
+app.use(express.static(__dirname + "/public"));
+require('./config/passport.js')(passport);
 
 //set up express application
 app.use(morgan('dev'));
@@ -26,13 +27,19 @@ app.use(bodyParser());
 app.set('view engine', 'ejs');// set up ejs for templating
 
 //required for passport
-app.use(session({secret:'ilovepoekiepoekidoe'})); //session secret
+app.use(session({secret:'ilovescotchscotchyscotchscotch'})); //session secret
 app.use(passport.initialize());
 app.use(passport.session()); //persistent login sessions
 app.use(flash());
+app.use(function(req,res,next){
+    res.locals.currentUser = req.user;
+   res.locals.error = req.flash("error");
+   res.locals.success = req.flash("success");
+   next();
+})
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static(__dirname + "/public"));
+// app.use(express.static(__dirname + "/public"));
 
 //require routes
 require('./app/routes.js')(app, passport);//routes laden en volledig geconfigureerde passport
@@ -40,8 +47,5 @@ require('./app/routes.js')(app, passport);//routes laden en volledig geconfigure
 
 //var auth = firebase.auth();
 
-var port = 8080;
-
-app.listen(port, function(){
-    console.log("Server has started");
-});
+app.listen(port);
+console.log("Server has started");

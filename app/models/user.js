@@ -9,6 +9,7 @@ var userSchema = mongoose.Schema({
     local            : {
         email        : String,
         password     : String,
+        username     : String
     },
     facebook         : {
         id           : String,

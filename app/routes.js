@@ -1,6 +1,7 @@
 // app/routes.js
-module.exports = function(app, passport) {
 
+module.exports = function(app, passport) {
+var Team = require("./models/team.js");
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -61,6 +62,44 @@ module.exports = function(app, passport) {
         req.logout();
         res.redirect('/');
     });
+
+    //======================================
+    //Check stats
+    //======================================
+    app.get('/MyStats/:id', isLoggedIn, function(req,res){
+        res.render('mystats', {user: req.user});
+    });
+
+    //======================================
+    //Speler toevoegen
+    //======================================
+    app.get('/addPlayer', isLoggedIn, function(req,res){
+        res.render('addPlayer',{user: req.user});
+    })
+
+    app.post('/newPlayer',isLoggedIn, function(req,res){
+        var team = {
+            teamName: "The White Russians",
+            season: {
+                period: '2018-2019',
+                players:{
+                    voornaam: req.body.voornaam,
+                    familienaam: req.body.familienaam,
+                }
+            }
+        }
+        var nieuweSpeler ={voornaam: firstname, familienaam: lastname, nummer: number};
+
+        Team.create(team,function(err, newlyCreated){
+            if(err){
+                console.log(err);
+            }else{
+                console.log(newlyCreated);
+                res.redirect("/");
+            }
+
+        })
+    })
 };
 
 // route middleware to make sure a user is logged in

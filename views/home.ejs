@@ -1,4 +1,11 @@
 <% include ../partials/header.ejs %>
 <div class="col-md-3 leftbanner">
 </div>
+<div class="col-md-3">
+        <% user.teamName.forEach(function(team){%>
+        <div class="row">
+            <h3>team</h3>
+        </div>
+        <%})%>
+</div>
 <% include ../partials/footer.ejs %>

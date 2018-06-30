@@ -2,6 +2,7 @@
 
 module.exports = function(app, passport) {
 var Team = require("./models/team.js");
+var Player = require("./models/player.js");
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -77,27 +78,48 @@ var Team = require("./models/team.js");
         res.render('addPlayer',{user: req.user});
     })
 
-    app.post('/newPlayer',isLoggedIn, function(req,res){
-        var team = {
-            teamName: "The White Russians",
+        //======================================
+    //Team
+    //======================================
+    app.get('/addTeam', isLoggedIn, function(req,res){
+        res.render('addTeam',{user: req.user});
+    })
+
+    app.post('/newTeam', isLoggedIn, function(req,res){
+        var newTeam = new Team();
+        newTeam.team = {
+            teamName: req.body.teamnaam,
             season: {
-                period: '2018-2019',
-                players:{
-                    voornaam: req.body.voornaam,
-                    familienaam: req.body.familienaam,
-                }
+            period: req.body.season,
             }
         }
-        var nieuweSpeler ={voornaam: firstname, familienaam: lastname, nummer: number};
-
-        Team.create(team,function(err, newlyCreated){
+        Team.create(newTeam,function(err, newlyCreated){
             if(err){
                 console.log(err);
             }else{
+                req.flash("Succes!, team added!")
                 console.log(newlyCreated);
                 res.redirect("/");
             }
+        })
+    })
 
+    app.post('/newPlayer',isLoggedIn, function(req,res){
+        var newPlayer = new Player();
+         newPlayer.player = {
+                    voornaam: req.body.voornaam,
+                    familienaam: req.body.familienaam,
+                    nummer: req.body.nummer,
+            }
+        
+        Player.create(newPlayer,function(err, newlyCreated){
+            if(err){
+                console.log(err);
+            }else{
+                req.flash("Succes!, player added!")
+                console.log(newlyCreated);
+                res.redirect("/");
+            }
         })
     })
 };

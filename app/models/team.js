@@ -3,20 +3,13 @@ var mongoose = require('mongoose');
 var teamSchema = mongoose.Schema({
     team: {
         teamName: String,
-        season:{
+        season:[{
                 period: String,
-                players:{
-                    voornaam: String,
-                    familienaam: String,
-                    id: String,
-                    stats:{
-                        goals: Number,
-                        assists: Number,
-                        games: Number,
-                    }
-                }
-        }       
-    }
+                players:[{
+                    player_id: String,
+                }]
+        }]      
+    },
 });
 
 // statsSchema.methods.getGoals = function(cb){

@@ -1,0 +1,19 @@
+.leftbanner{
+    background-color: green;
+    height: 50px;
+    width: 100%;
+}
+
+.newPlayerForm{
+    max-width: 300px;
+    margin: auto;
+}
+
+.newPlayerForm .form-group{
+    text-align: left;
+}
+
+.newPlayerForm .btn{
+    text-align: center;
+    margin: 5px 0px;
+}

@@ -1,0 +1,13 @@
+<% include ../partials/header.ejs %>
+<div class="col-md-6 newTeamForm">
+<form action="/newTeam" method="POST">
+  <div class="form-group">
+    <label for="teamnaam">Team naam</label>
+    <input type="text" class="form-control" id="teamnaam" name="teamnaam">
+    <label for="season">season</label>
+    <input type="text" class="form-control" id="season" name="season">
+    <button class="btn btn-primary" type="submit">Toevoegen</button>
+  </div>
+</form>
+</div>
+<% include ../partials/footer.ejs %>

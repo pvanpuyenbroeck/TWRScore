@@ -1,6 +1,8 @@
 // app/routes.js
-module.exports = function(app, passport) {
 
+module.exports = function(app, passport) {
+var Team = require("./models/team.js");
+var Player = require("./models/player.js");
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -49,9 +51,18 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     app.get('/home', isLoggedIn, function(req, res) {
-        res.render('home.ejs', {
-            user : req.user // get the user out of session and pass to template
+        Team.find({}, function(err, foundTeams){
+            if(err){
+                console.log(err);
+            }else{
+                console.log(foundTeams);
+            res.render('home.ejs', {
+            user : req.user, teams : foundTeams// get the user out of session and pass to template
         });
+            }
+
+     });
+
     });
 
     // =====================================
@@ -61,6 +72,65 @@ module.exports = function(app, passport) {
         req.logout();
         res.redirect('/');
     });
+
+    //======================================
+    //Check stats
+    //======================================
+    app.get('/MyStats/:id', isLoggedIn, function(req,res){
+        res.render('mystats', {user: req.user});
+    });
+
+    //======================================
+    //Speler toevoegen
+    //======================================
+    app.get('/addPlayer', isLoggedIn, function(req,res){
+        res.render('addPlayer',{user: req.user});
+    })
+
+        //======================================
+    //Team
+    //======================================
+    app.get('/addTeam', isLoggedIn, function(req,res){
+        res.render('addTeam',{user: req.user});
+    })
+
+    app.post('/newTeam', isLoggedIn, function(req,res){
+        var newTeam = new Team();
+        newTeam.team = {
+            teamName: req.body.teamnaam,
+            season: {
+            period: req.body.season,
+            }
+        }
+        Team.create(newTeam,function(err, newlyCreated){
+            if(err){
+                console.log(err);
+            }else{
+                req.flash("Succes!, team added!")
+                console.log(newlyCreated);
+                res.redirect("/");
+            }
+        })
+    })
+
+    app.post('/newPlayer',isLoggedIn, function(req,res){
+        var newPlayer = new Player();
+         newPlayer.player = {
+                    voornaam: req.body.voornaam,
+                    familienaam: req.body.familienaam,
+                    nummer: req.body.nummer,
+            }
+        
+        Player.create(newPlayer,function(err, newlyCreated){
+            if(err){
+                console.log(err);
+            }else{
+                req.flash("Succes!, player added!")
+                console.log(newlyCreated);
+                res.redirect("/");
+            }
+        })
+    })
 };
 
 // route middleware to make sure a user is logged in

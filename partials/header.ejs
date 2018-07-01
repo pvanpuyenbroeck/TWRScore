@@ -8,13 +8,31 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
- <link href="../public/css/signin.css" rel="stylesheet" type="html/css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<link href="/css/signin.css" rel="stylesheet">
+<link href="/css/opmaak.css" rel="stylesheet">
 </head>
 <body>
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-      <h5 class="my-0 mr-md-auto font-weight-normal">The White Rusians </h5>
-
+      <h5 class="my-0 mr-md-auto font-weight-normal">Team naam komt hier</h5>
+      <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Options
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <%if(currentUser){%>
+          <a class="dropdown-item" href="/MyStats/<%=user._id%>">My stats</a>
+           <%}%>
+           <a class="dropdown-item" href="/addPlayer">Speler toevoegen</a>
+           <a class="dropdown-item" href="/addTeam">Team toevoegen</a>
+        </div>
+      </li>
+      </ul>
+      <%if(currentUser){%>
+      <h6 class="my-0 mr-md-auto font-weight-normal"><%=user.local.username%></h6>
+      <%}%>
+    
       <nav class="my-2 my-md-0 mr-md-3">
 
         <% if(currentUser) {%>

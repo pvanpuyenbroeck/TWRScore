@@ -3,6 +3,9 @@
 module.exports = function(app, passport) {
 var Team = require("./models/team.js");
 var Player = require("./models/player.js");
+var middleware = require("../middleware/index.js");
+var teamRoutes = require("../app/teamRoutes.js");
+app.use("/team", teamRoutes);
     // =====================================
     // HOME PAGE (with login links) ========
     // =====================================
@@ -50,21 +53,28 @@ var Player = require("./models/player.js");
     // =====================================
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
-    app.get('/home', isLoggedIn, function(req, res) {
+    app.get('/home',middleware.isLoggedIn, function(req, res) {
         Team.find({}, function(err, foundTeams){
             if(err){
                 console.log(err);
             }else{
                 console.log(foundTeams);
-            res.render('home.ejs', {
-            user : req.user, teams : foundTeams// get the user out of session and pass to template
-        });
+            res.render('home.ejs', {user : req.user, teams : foundTeams});// get the user out of session and pass to template      
             }
-
      });
-
     });
 
+    app.get('/team/:teamname',function(req, res){
+        var team = new Team();
+        Team.findOne({'team.teamName': req.params.teamname},function(err,foundTeam){
+            console.log(foundTeam);
+            if(err){
+                console.log(err);
+            }else{
+                res.render('teamView', {user: req.user, team:foundTeam})
+            }
+        })
+})
     // =====================================
     // LOGOUT ==============================
     // =====================================
@@ -131,6 +141,9 @@ var Player = require("./models/player.js");
             }
         })
     })
+
+
+
 };
 
 // route middleware to make sure a user is logged in

@@ -20,14 +20,12 @@ var app = require("../app.js");
 // });
 
 middlewareObj.isLoggedIn = function(req,res, next){
-    if(req.user){
-        console.log(user + " is ingelogd");
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
         return next();
-    }else{
-        console.log("Er is niemand ingelogd");
-        res.redirect("/login");
-    }
-    
+
+    // if they aren't redirect them to the login page
+    res.redirect('/login');
 }
 
 middlewareObj.checkSomething = function(req,res,next){

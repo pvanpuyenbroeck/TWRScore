@@ -1,9 +1,7 @@
 .leftbanner{
-    background-color: green;
-    height: 50px;
+    height: 100%;
     width: 100%;
 }
-
 .newPlayerForm{
     max-width: 300px;
     margin: auto;
@@ -16,4 +14,8 @@
 .newPlayerForm .btn{
     text-align: center;
     margin: 5px 0px;
+}
+
+.teamList row{
+    border: 1px solid black;
 }

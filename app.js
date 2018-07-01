@@ -11,14 +11,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var port     = process.env.PORT || 8080;
-var passportFirebase = require('passport-firebase-auth');
+
+// var passportFirebase = require('passport-firebase-auth');
 
 var configDB = require('./config/database.js');
 
 //configuration
 mongoose.connect(configDB.url);
 app.use(express.static(__dirname + "/public"));
-require('./config/passport-firebase.js')(passport);
+require('./config/passport.js')(passport);
 
 
 //set up express application
@@ -40,12 +41,12 @@ app.use(function(req,res,next){
    next();
 })
 
+
 app.use(bodyParser.urlencoded({extended: true}));
 // app.use(express.static(__dirname + "/public"));
 
 //require routes
 require('./app/routes.js')(app, passport);//routes laden en volledig geconfigureerde passport
-
 
 //var auth = firebase.auth();
 

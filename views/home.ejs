@@ -1,11 +1,15 @@
 <% include ../partials/header.ejs %>
+<div class="container">
+<div class="col-md-3"> </div>
 <div class="col-md-3 leftbanner">
-</div>
-<div class="col-md-3">
-        <% user.teamName.forEach(function(team){%>
+<div class="teamList">
+    <h3>Teams</h3>
+        <% teams.forEach(function(team){%>
         <div class="row">
-            <h3>team</h3>
+            <a href="/team/<%=team.team.teamName%>"><h3><%= team.team.teamName%></h3><a>
         </div>
         <%})%>
+</div>
+</div>
 </div>
 <% include ../partials/footer.ejs %>

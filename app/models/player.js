@@ -9,7 +9,8 @@ var playerSchema = mongoose.Schema({
             goals: Number,
             assists: Number,
             games: Number,
-        }
+        },
+        teamid: String,
     }
 });
 

@@ -3,6 +3,13 @@
       <h5 class="my-0 mr-md-auto font-weight-normal">
           <%if(team.team.teamName){%>
           <%=team.team.teamName%>
-          <%}%>
-      </h5>
+          <%}%>      </h5>
+          </br>
+        <% players.forEach(function(player){%>
+        <div class="teamList">
+            <a href="/team/<%=player._id%>"><h3><%= player.player.voornaam + " " + player.player.familienaam%></h3><a>
+        </div>
+        <%})%>
+          <a class="btn btn-primary" href="/addPlayer/<%=team._id%>" role="button">Speler toevoegen</a>
+
       <% include ../partials/footer.ejs %>

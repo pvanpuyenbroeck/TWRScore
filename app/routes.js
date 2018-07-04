@@ -65,14 +65,23 @@ app.use("/team", teamRoutes);
      });
     });
 
-    app.get('/team/:teamname',isLoggedIn, function(req, res){
+    app.get('/team/:id',isLoggedIn, function(req, res){
         var team = new Team();
-        Team.findOne({'team.teamName': req.params.teamname},function(err,foundTeam){
+        Team.findOne({'_id': req.params.id},function(err,foundTeam){
             console.log(foundTeam);
             if(err){
                 console.log(err);
             }else{
-                res.render('teamView', {user: req.user, team:foundTeam})
+                var players = new Player()
+                Player.find({'player.teamid': req.params.id},function(err, foundPlayers){
+                    console.log(foundPlayers);
+                    if(err){
+                        console.log(err);
+                    }else{
+                        res.render('teamView', {user: req.user, team:foundTeam, players: foundPlayers});
+                    }
+                })
+                
             }
         })
 })
@@ -94,8 +103,9 @@ app.use("/team", teamRoutes);
     //======================================
     //Speler toevoegen
     //======================================
-    app.get('/addPlayer', isLoggedIn, function(req,res){
-        res.render('addPlayer',{user: req.user});
+    app.get('/addPlayer/:id', isLoggedIn, function(req,res){
+        var teamid= req.params.id;
+        res.render('addPlayer',{user: req.user, team: req.team, teamid: teamid});
     })
 
         //======================================
@@ -125,12 +135,13 @@ app.use("/team", teamRoutes);
         })
     })
 
-    app.post('/newPlayer',isLoggedIn, function(req,res){
+    app.post('/newPlayer/:id',isLoggedIn, function(req,res){
         var newPlayer = new Player();
          newPlayer.player = {
                     voornaam: req.body.voornaam,
                     familienaam: req.body.familienaam,
                     nummer: req.body.nummer,
+                    teamid: req.params.id,
             }
         
         Player.create(newPlayer,function(err, newlyCreated){
@@ -139,7 +150,7 @@ app.use("/team", teamRoutes);
             }else{
                 req.flash("Succes!, player added!")
                 console.log(newlyCreated);
-                res.redirect("/");
+                res.redirect("/team/" + req.params.id);
             }
         })
     })

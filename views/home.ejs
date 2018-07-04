@@ -6,7 +6,7 @@
     <h3>Teams</h3>
         <% teams.forEach(function(team){%>
         <div class="row">
-            <a href="/team/<%=team.team.teamName%>"><h3><%= team.team.teamName%></h3><a>
+            <a href="/team/<%=team._id%>"><h3><%= team.team.teamName%></h3><a>
         </div>
         <%})%>
 </div>

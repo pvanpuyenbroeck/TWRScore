@@ -1,6 +1,6 @@
 <% include ../partials/header.ejs %>
 <div class="col-md-6 newPlayerForm">
-<form action="/newPlayer" method="POST">
+<form action="/newPlayer/<%=teamid%>" method="POST">
   <div class="form-group">
     <label for="voornaam">Voornaam</label>
     <input type="text" class="form-control" id="voornaam" name="voornaam">

@@ -54,17 +54,18 @@ app.use("/team", teamRoutes);
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     app.get('/home',middleware.isLoggedIn, function(req, res) {
-        Team.find({}, function(err, foundTeams){
+        Team.find({'team.admin': req.user._id}, function(err, foundTeams){
             if(err){
                 console.log(err);
             }else{
                 console.log(foundTeams);
+                console.log(req.user._id);
             res.render('home.ejs', {user : req.user, teams : foundTeams});// get the user out of session and pass to template      
             }
      });
     });
 
-    app.get('/team/:teamname',function(req, res){
+    app.get('/team/:teamname',isLoggedIn, function(req, res){
         var team = new Team();
         Team.findOne({'team.teamName': req.params.teamname},function(err,foundTeam){
             console.log(foundTeam);
@@ -108,6 +109,7 @@ app.use("/team", teamRoutes);
         var newTeam = new Team();
         newTeam.team = {
             teamName: req.body.teamnaam,
+            admin: req.user._id,
             season: {
             period: req.body.season,
             }

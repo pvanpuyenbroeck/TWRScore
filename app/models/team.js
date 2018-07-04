@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var teamSchema = mongoose.Schema({
     team: {
         teamName: String,
+        admin: String,
         season:[{
                 period: String,
                 players:[{
@@ -10,6 +11,7 @@ var teamSchema = mongoose.Schema({
                 }]
         }]      
     },
+
 });
 
 // statsSchema.methods.getGoals = function(cb){
